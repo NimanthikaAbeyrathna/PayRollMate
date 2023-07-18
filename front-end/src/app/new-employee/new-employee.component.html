@@ -1,0 +1,138 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+               [mode]="(isHandset$ | async) ? 'over' : 'side'"
+               [opened]="(isHandset$ | async) === false">
+
+    <img id="logo" src="/assets/images/logo.png"  alt="uhuhu">
+    <mat-nav-list>
+      <a mat-list-item  routerLink="/">Home</a>
+      <a mat-list-item routerLink="/new-employee">Insert new Employees</a>
+      <a mat-list-item routerLink="/salary-generate">Salary</a>
+      <a mat-list-item routerLink="/pay-sheet-print">Pay sheets</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>New Employee</span>
+    </mat-toolbar>
+    <div id="mainDiv" class="flex-container">
+
+      <div id="leftDiv" class="flex-item p-3">
+        <form class="container">
+          <div class="form-group p-1">
+            <label for="employeeID">Employee ID:</label>
+            <input id="employeeID" class="form-control form-control-sm" type="text" required placeholder="Enter Employee ID">
+          </div>
+          <div class="form-group p-1">
+            <label for="fullName">Full Name:</label>
+            <input id="fullName" class="form-control form-control-sm" type="text" required placeholder="Enter Full Name">
+          </div>
+          <div class="form-group p-1">
+            <label for="idNo">ID No:</label>
+            <input id="idNo" class="form-control form-control-sm" type="text" required pattern="[0-9]{9}[XVxv]" placeholder="Enter ID No">
+          </div>
+          <div class="form-group p-1">
+            <label for="gender">Gender:</label>
+            <input id="gender" class="form-control form-control-sm" type="text" required pattern="(MALE|FEMALE)" placeholder="Enter Gender (MALE or FEMALE)">
+          </div>
+          <div class="form-group p-1">
+            <label for="dob">Date of Birth:</label>
+            <input id="dob" class="form-control form-control-sm" type="date" required placeholder="Select Date of Birth">
+          </div>
+          <div class="form-group p-1">
+            <label for="address">Address:</label>
+            <input id="address" class="form-control form-control-sm" type="text" required placeholder="Enter Address">
+          </div>
+          <div class="form-group p-1">
+            <label for="contactNumber">Contact Number:</label>
+            <input id="contactNumber" class="form-control form-control-sm" type="tel" required pattern="[0-9]{3}-[0-9]{7}" placeholder="Enter Contact Number (e.g., 123-4567890)">
+          </div>
+          <div class="form-group p-1">
+            <label for="email">Email Address:</label>
+            <input id="email" class="form-control form-control-sm" type="email" required placeholder="Enter Email Address">
+          </div>
+          <div class="form-group">
+            <label for="imageUpload">Upload Image:</label>
+            <div class="custom-file">
+              <input id="imageUpload" class="custom-file-input" type="file" accept="image/*" (change)="handleImageUpload($event)">
+
+            </div>
+          </div>
+          <div >
+            <div id="previewImage"  [style.background-image]="'url(' + previewImageUrl + ')'"></div>
+          </div>
+          <div class="form-group p-1">
+            <label for="department">Department:</label>
+            <input id="department" class="form-control form-control-sm" type="text" required placeholder="Enter Department">
+          </div>
+          <div class="form-group p-1">
+            <label for="post">Post:</label>
+            <input id="post" class="form-control form-control-sm" type="text" required placeholder="Enter Post">
+          </div>
+          <div class="form-group p-1">
+            <label for="epfNumber">EPF Number:</label>
+            <input id="epfNumber" class="form-control form-control-sm" type="text" required placeholder="Enter EPF Number">
+          </div>
+          <div class="form-group p-1">
+            <label for="basicSalary">Basic Salary:</label>
+            <input id="basicSalary" class="form-control form-control-sm" type="number" required placeholder="Enter Basic Salary" step="0.01">
+          </div>
+          <div class="form-group p-3">
+            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+          </div>
+        </form>
+
+      </div>
+
+      <div id="rightDiv" class="flex-item table-container p-3">
+
+        <table class="table table-info table-striped table-hover text-center table-sm ">
+          <thead>
+          <tr class="align-middle">
+            <th scope="col">Employee ID</th>
+            <th scope="col">Full Name</th>
+            <th scope="col">ID No</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Address</th>
+            <th scope="col">Contact number</th>
+            <th scope="col">Email address</th>
+            <th scope="col">Image url</th>
+            <th scope="col">Department</th>
+            <th scope="col">Post</th>
+            <th scope="col">EPF number</th>
+            <th scope="col">Basic salary</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th scope="row">E001</th>
+            <td>Gayantha kuruppuarachchilage rukshan</td>
+            <td>948272229v</td>
+            <td>MALE</td>
+            <td>1994-05-23</td>
+            <td>weralupa, Rathnapura</td>
+            <td>077-9456745</td>
+            <td>rdfrdhgeh@gmail.com</td>
+            <td>https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_16x9.jpg</td>
+            <td>Software dept</td>
+            <td>Software engineer</td>
+            <td>45622</td>
+            <td>100000</td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

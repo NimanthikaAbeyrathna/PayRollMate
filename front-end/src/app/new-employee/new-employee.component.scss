@@ -1,0 +1,58 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+#logo{
+  width: 55px;
+  height: 55px;
+  padding: 0 60px;
+}
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+
+}
+#leftDiv{
+
+}
+#rightDiv{
+
+}
+
+.flex-item {
+  flex: 1;
+  min-width: 0; /* Ensures the flex items can shrink properly */
+}
+table{
+  font-size: 10px;
+}
+.table-container {
+  height: 100%; /* Set the desired height */
+  overflow-y: auto; /* Enable vertical scroll */
+}
+
+#previewImage{
+  width: 100px;
+  height: 100px;
+  padding: 10px 0;
+  margin: 10px 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: grey;
+}
+
+
+

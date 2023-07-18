@@ -1,0 +1,33 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+               [mode]="(isHandset$ | async) ? 'over' : 'side'"
+               [opened]="(isHandset$ | async) === false">
+
+    <img id="logo" src="assets/images/logo.png" >
+    <mat-nav-list>
+      <a mat-list-item  routerLink="/">Home</a>
+      <a mat-list-item routerLink="/new-employee">Insert new Employees</a>
+      <a mat-list-item routerLink="/salary-generate">Salary</a>
+      <a mat-list-item routerLink="/pay-sheet-print">Pay sheets</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Salary</span>
+    </mat-toolbar>
+    <div id="mainDiv">
+      <!--      content-->
+
+
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
