@@ -4,9 +4,9 @@
                [mode]="(isHandset$ | async) ? 'over' : 'side'"
                [opened]="(isHandset$ | async) === false">
 
-    <img id="logo" src="assets/images/logo.png" >
+    <img id="logo" src="assets/images/logo.png">
     <mat-nav-list>
-      <a mat-list-item  routerLink="/">Home</a>
+      <a mat-list-item routerLink="/">Home</a>
       <a mat-list-item routerLink="/new-employee">Insert new Employees</a>
       <a mat-list-item routerLink="/salary-generate">Salary</a>
       <a mat-list-item routerLink="/pay-sheet-print">Pay sheets</a>
@@ -24,8 +24,261 @@
       </button>
       <span>Salary</span>
     </mat-toolbar>
-    <div id="mainDiv">
+    <div id="mainDiv" class="flex-container">
       <!--      content-->
+      <div id="leftDDiv" class="flex-item p-3">
+        <form class="container">
+          <div class="form-group p-1">
+            <label for="employeeID">Employee ID:</label>
+            <input id="employeeID" class="form-control form-control-sm" type="text" required
+                   placeholder="Enter Employee ID">
+          </div>
+          <div class="form-group p-1">
+            <label for="yearElm">Year</label>
+            <input id="yearElm" class="form-control form-control-sm" type="number" required placeholder="Enter Year">
+          </div>
+          <div class="form-group p-1">
+            <label for="monthElm">Month</label>
+            <input id="monthElm" class="form-control form-control-sm" type="number" required placeholder="Enter Month">
+          </div>
+          <div class="form-group p-1">
+            <label for="basicSalaryElm">Basic Salary :</label>
+            <br>
+            <label id="basicSalaryElm">2000.00</label>
+          </div>
+          <div class="bg-info">
+            <h3>Employee Attendance</h3>
+            <div class="form-group p-1">
+              <label for="leavedAllowedElm">Leave Allowed</label>
+              <input id="leavedAllowedElm" class="form-control form-control-sm" type="number" required
+                     placeholder="Enter Leave Allowed">
+            </div>
+            <div class="form-group p-1">
+              <label for="leaveTakenElm">Leave Taken</label>
+              <input id="leaveTakenElm" class="form-control form-control-sm" type="number" required
+                     placeholder="Enter Leave Taken">
+            </div>
+            <div class="form-group p-1">
+              <label for="noPayLeaveElm">No Pay Leave</label>
+              <br>
+              <label id="noPayLeaveElm">2</label>
+            </div>
+            <div class="form-group p-1">
+              <label for="normalOverTimeHoursElm">Normal Overtime Hours</label>
+              <input id="normalOverTimeHoursElm" class="form-control form-control-sm" type="time" required
+                     placeholder="Enter Normal Overtime Hours">
+            </div>
+            <div class="form-group p-1">
+              <label for="specialOverTimeHoursElm">Overtime Hours in Poya Days and Government Holidays</label>
+              <input id="specialOverTimeHoursElm" class="form-control form-control-sm" type="time" required
+                     placeholder="Enter Overtime Hours">
+            </div>
+          </div>
+
+
+          <div id="salaryCalculation" class="row p-3">
+            <div id="additions" class="col-md-6 bg-primary">
+              <h3>Salary Additions</h3>
+              <div class="form-group p-1">
+                <label for="salaryIncrementElm">Salary Increment</label>
+                <input id="salaryIncrementElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Salary Increment" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="livingAllowanceElm">Cost of Living Allowance</label>
+                <input id="livingAllowanceElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Cost of Living Allowance" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="foodAllowanceElm">Food Allowance</label>
+                <input id="foodAllowanceElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Food Allowance" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="conveyanceAllowanceElm">Conveyance Allowance</label>
+                <input id="conveyanceAllowanceElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Conveyance Allowance" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="medicalAllowanceElm">Medical Allowance</label>
+                <input id="medicalAllowanceElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Medical Allowance" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="grossSalaryElm">Gross Salary</label>
+                <br>
+                <label id="grossSalaryElm">852.00</label>
+              </div>
+              <div class="form-group p-1">
+                <label for="overTimeElm">Over Time</label>
+                <br>
+                <label id="overTimeElm">5000.00</label>
+              </div>
+              <div class="form-group p-1">
+                <label for="reimbursementsElm">Reimbursements</label>
+                <input id="reimbursementsElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Reimbursements" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="bonusElm">Bonus</label>
+                <input id="bonusElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Bonus" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="beforeDeductionElm">Salary Before Deduction</label>
+                <br>
+                <label id="beforeDeductionElm">852.00</label>
+              </div>
+            </div>
+
+            <div id="deductions" class="col-md-6 bg-warning">
+              <h3>Salary Deductions</h3>
+              <div class="form-group p-1">
+                <label for="noPayDeductionsElm">No Pay Days Deductions</label>
+                <br>
+                <label id="noPayDeductionsElm">200.00</label>
+              </div>
+              <div class="form-group p-1">
+                <label for="salaryAdvanceElm">Salary Advance</label>
+                <input id="salaryAdvanceElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter Salary Advance" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="welfareServiceElm">welfare services</label>
+                <input id="welfareServiceElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter welfare services deductions" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="insuranceElm">insurance</label>
+                <input id="insuranceElm" class="form-control form-control-sm" type="number" required
+                       placeholder="Enter insurance" step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="apitElm">Advance Personal Income Tax (APIT)</label>
+                <input id="apitElm" class="form-control form-control-sm" type="number" required placeholder="Enter APIT"
+                       step="0.01">
+              </div>
+              <div class="form-group p-1">
+                <label for="epfEmployeedeductionElm">EPF Employee Contribution (8%)</label>
+                <br>
+                <label id="epfEmployeedeductionElm">852.00</label>
+              </div>
+              <div class="form-group p-1">
+                <label for="totalDeductionElm">Total Deductions</label>
+                <br>
+                <label id="totalDeductionElm">852.00</label>
+              </div>
+
+
+            </div>
+
+          </div>
+          <div class="form-group p-1">
+            <label for="netSalaryElm">Net Payable Salary</label>
+            <br>
+            <label id="netSalaryElm">852.00</label>
+          </div>
+          <div class="form-group p-1">
+            <label for="employerEPFElm">EPF Employer Contribution(12%)</label>
+            <br>
+            <label id="employerEPFElm">852.00</label>
+          </div>
+          <div class="form-group p-1">
+            <label for="employerETFElm">ETF Employer Contribution (3%)</label>
+            <br>
+            <label id="employerETFElm">852.00</label>
+          </div>
+          <div class="form-group p-1">
+            <label for="employerInsuranceElm">Employer Insurance Contribution</label>
+            <br>
+            <label id="employerInsuranceElm">852.00</label>
+          </div>
+          <button id="saveBtn" type="submit" class=" m-2">Save</button>
+          <button id="clearBtn" type="reset" class="btn-warning">Clear</button>
+
+        </form>
+
+      </div>
+      <div id="rightDiv" class="flex-item p-3">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm table-hover table-striped">
+            <thead>
+            <tr>
+              <th>Emp ID</th>
+              <th>Year</th>
+              <th>Month</th>
+              <th>Basic Salary</th>
+              <th>Leave Allowed</th>
+              <th>Leave Taken</th>
+              <th>No Pay Leave</th>
+              <th>Normal Overtime Hours</th>
+              <th>Special overtime hours</th>
+              <th>Salary Increment</th>
+              <th>Cost of Living Allowance</th>
+              <th>Food Allowance</th>
+              <th>Conveyance Allowance</th>
+              <th>Medical Allowance</th>
+              <th>Gross Salary</th>
+              <th>Over Time</th>
+              <th>Reimbursements</th>
+              <th>Bonus</th>
+              <th>Salary Before Deduction</th>
+              <th>No Pay Days Deductions</th>
+              <th>Salary Advance</th>
+              <th>welfare services</th>
+              <th>insurance</th>
+              <th>APIT</th>
+              <th>EPF Employee</th>
+              <th>Total Deductions</th>
+              <th>Net Sallary</th>
+              <th>EPF Employer</th>
+              <th>ETF Employer</th>
+              <th>Employer Insurance</th>
+
+            </tr>
+
+            </thead>
+            <tbody>
+            <tr>
+              <td>EMP001</td>
+              <td>2023</td>
+              <td>July</td>
+              <td>2000.00</td>
+              <td>12</td>
+              <td>2</td>
+              <td>2</td>
+              <td>10:00</td>
+              <td>02:30</td>
+              <td>100.00</td>
+              <td>50.00</td>
+              <td>20.00</td>
+              <td>30.00</td>
+              <td>40.00</td>
+              <td>2250.00</td>
+              <td>500.00</td>
+              <td>50.00</td>
+              <td>100.00</td>
+              <td>2900.00</td>
+              <td>50.00</td>
+              <td>20.00</td>
+              <td>10.00</td>
+              <td>5.00</td>
+              <td>15.00</td>
+              <td>200.00</td>
+              <td>170.00</td>
+              <td>530.00</td>
+              <td>2370.00</td>
+              <td>200.00</td>
+              <td>60.00</td>
+              <td>20.00</td>
+
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
 
 
     </div>

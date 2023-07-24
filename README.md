@@ -4,6 +4,6 @@
 
 ## used tech stacks
 
--front-end= angular,angural materials
+-front-end= angular,angural materials,Bootstrap
 
--back-end = spring boot
+-back-end = spring boot, Node js
