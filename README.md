@@ -12,8 +12,8 @@
 
 #### Used tech stacks
 
--front-end - angular,angural materials,Bootstrap
--back-end - spring boot, Node js
+- front-end - angular,angural materials,Bootstrap
+- back-end - spring boot, Node js
 
 
 ## version 1.0.0
