@@ -4,11 +4,11 @@
 
 ## Key Features
 
-User-Friendly Interface: The app provides an intuitive and easy-to-navigate interface, making it accessible for users of all technical backgrounds.
-Employee Data Management: Manage employee details such as name, position, salary, deductions, and other relevant information in a centralized database.
-Automatic Calculations: The app automatically calculates employee wages based on their working hours, overtime, bonuses, and deductions.
-Tax and Deduction Management: Facilitate the management of taxes and other deductions, ensuring accurate and compliant pay sheets.
-Export and Print Options: Enable users to export pay sheets in various formats, such as PDF or CSV, and provide printing capabilities for physical records.
+- User-Friendly Interface: The app provides an intuitive and easy-to-navigate interface, making it accessible for users of all technical backgrounds.
+- Employee Data Management: Manage employee details such as name, position, salary, deductions, and other relevant information in a centralized database.
+- Automatic Calculations: The app automatically calculates employee wages based on their working hours, overtime, bonuses, and deductions.
+- Tax and Deduction Management: Facilitate the management of taxes and other deductions, ensuring accurate and compliant pay sheets.
+- Export and Print Options: Enable users to export pay sheets in various formats, such as PDF or CSV, and provide printing capabilities for physical records.
 
 #### Used tech stacks
 
