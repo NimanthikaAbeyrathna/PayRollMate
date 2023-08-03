@@ -10,7 +10,7 @@
 - Tax and Deduction Management: Facilitate the management of taxes and other deductions, ensuring accurate and compliant pay sheets.
 - Export and Print Options: Enable users to export pay sheets in various formats, such as PDF or CSV, and provide printing capabilities for physical records.
 
-#### Used tech stacks
+## Used tech stacks
 
 - front-end - angular,angural materials,Bootstrap
 - back-end - spring boot, Node js
