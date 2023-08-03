@@ -1,16 +1,10 @@
-import dotenv from 'dotenv';
+import express, {json} from 'express';
+import {router} from "./api/employee-controller";
+import cors from 'cors';
 
-// dotenv.config();
+const app = express();
+app.use(cors());
 
-// async function initPool() {
-//     pool = await mysql.createPool({
-//         host: process.env.host,
-//         port: +process.env.port!,
-//         database: process.env.database,
-//         user: process.env.username,
-//         password: process.env.password,
-//         connectionLimit: +process.env.connection_limit!
-//     });
-// }
-
-console.log("ok");
+app.use(json());
+app.use("/app/api/v1/employee", router);
+app.listen(8085, () => console.log("server has been started at 8085"));

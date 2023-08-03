@@ -18,6 +18,9 @@ import {PaySheetPrintComponent} from './pay-sheet-print/pay-sheet-print.componen
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import {HttpClientModule} from "@angular/common/http";
+import {FormsModule} from "@angular/forms";
+import {ToastrModule} from "ngx-toastr";
 
 const routes: Routes = [{
     path: '',
@@ -58,7 +61,10 @@ const routes: Routes = [{
     RouterModule.forRoot(routes),
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    HttpClientModule,
+    FormsModule,
+    ToastrModule
   ],
   providers: [],
   bootstrap: [AppComponent]

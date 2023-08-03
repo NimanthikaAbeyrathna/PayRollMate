@@ -4,12 +4,12 @@
                [mode]="(isHandset$ | async) ? 'over' : 'side'"
                [opened]="(isHandset$ | async) === false">
 
-    <img id="logo" src="assets/images/logo.png">
+    <img id="logo" class="p-3" src="assets/images/logo.png" alt="">
     <mat-nav-list>
       <a mat-list-item routerLink="/">Home</a>
       <a mat-list-item routerLink="/new-employee">Insert new Employees</a>
       <a mat-list-item routerLink="/salary-generate">Salary</a>
-      <a mat-list-item routerLink="/pay-sheet-print">Pay sheets</a>
+      <a mat-list-item routerLink="/pay-sheet-print">Print</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -27,50 +27,123 @@
     <div id="mainDiv" class="flex-container">
       <!--      content-->
       <div id="leftDDiv" class="flex-item p-3">
-        <form class="container">
-          <div class="form-group p-1">
-            <label for="employeeID">Employee ID:</label>
-            <input id="employeeID" class="form-control form-control-sm" type="text" required
-                   placeholder="Enter Employee ID">
+        <form class="container" (ngSubmit)="saveSalary($event,saveBtn,employeeIDSelect)">
+
+          <div class="form-floating">
+            <select class="form-select" (change)="onSelectChange($event)" #employeeIDSelect name="selectEmployee"
+                    aria-label="Floating label select example" [(ngModel)]="selectedEmployeeID"
+                    [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled selected></option>
+              <option *ngFor="let employeeId of employeeIDsArray" [value]="employeeId">{{ employeeId }}</option>
+            </select>
+            <label class="form-label" style="z-index: 0">Select employee ID</label>
           </div>
-          <div class="form-group p-1">
-            <label for="yearElm">Year</label>
-            <input id="yearElm" class="form-control form-control-sm" type="number" required placeholder="Enter Year">
+          <br>
+
+          <div class="form-floating d-flex">
+            <select class="form-select" id="yearSelect" name="selectYear" aria-label="Floating label select example"
+                    [(ngModel)]="selectedYear" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled selected></option>
+              <option *ngFor="let year of yearList" [value]="year.year">{{ year.year }}</option>
+            </select>
+            <label class="form-label" for="yearSelect" style="z-index: 0">Select year</label>
+            <button type="button" class="btn btn-primary m-2" (click)="showPopup()">+</button>
           </div>
-          <div class="form-group p-1">
-            <label for="monthElm">Month</label>
-            <input id="monthElm" class="form-control form-control-sm" type="number" required placeholder="Enter Month">
+
+          <!--year enter popup-->
+          <div class="popup-container" *ngIf="isPopupVisible">
+            <div class="popup">
+              <h1>Enter new Year</h1>
+              <div>
+                <input type="number" #yearInputElm placeholder="eg -: 2020">
+                <button class="btn-primary m-2" (click)="saveYear(yearInputElm)">Save</button>
+              </div>
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th>Year</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let year of yearList">
+                  <td scope="col">{{year.id}}</td>
+                  <td>{{year.year}}</td>
+                  <td>
+                    <div class="delete p-1" (click)="deleteYear(year)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                           class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path
+                          d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                      </svg>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <button (click)="hidePopup()">Close</button>
+            </div>
           </div>
-          <div class="form-group p-1">
-            <label for="basicSalaryElm">Basic Salary :</label>
+
+
+          <br>
+
+          <div class="form-floating">
+            <select class="form-select" id="monthSelect" name="selectedMonth" aria-label="Floating label select example"
+                    [(ngModel)]="selectedMonth" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled selected></option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+            <label class="form-label" for="monthSelect" style="z-index: 0">Select Month</label>
+          </div>
+          <br>
+          <div class="form-group">
+            <label class="form-label">Basic Salary :</label>
             <br>
-            <label id="basicSalaryElm">2000.00</label>
+            <label class="form-label">{{ basicSalary }}</label>
           </div>
+          <br>
           <div class="bg-info">
             <h3>Employee Attendance</h3>
             <div class="form-group p-1">
-              <label for="leavedAllowedElm">Leave Allowed</label>
-              <input id="leavedAllowedElm" class="form-control form-control-sm" type="number" required
+              <label class="form-label" for="leavedAllowedElm">Leave Allowed</label>
+              <input id="leavedAllowedElm" [(ngModel)]="leaveAllowed" (input)="updateNoPayLeave()"
+                     [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number" required
                      placeholder="Enter Leave Allowed">
             </div>
             <div class="form-group p-1">
-              <label for="leaveTakenElm">Leave Taken</label>
-              <input id="leaveTakenElm" class="form-control form-control-sm" type="number" required
+              <label class="form-label" for="leaveTakenElm">Leave Taken</label>
+              <input id="leaveTakenElm" [(ngModel)]="leaveTaken" (input)="updateNoPayLeave()"
+                     [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number" required
                      placeholder="Enter Leave Taken">
             </div>
             <div class="form-group p-1">
-              <label for="noPayLeaveElm">No Pay Leave</label>
+              <label class="form-label" for="noPayLeaveElm">No Pay Leave</label>
               <br>
-              <label id="noPayLeaveElm">2</label>
+              <label class="form-label" id="noPayLeaveElm">{{noPayLeave}}</label>
             </div>
             <div class="form-group p-1">
-              <label for="normalOverTimeHoursElm">Normal Overtime Hours</label>
-              <input id="normalOverTimeHoursElm" class="form-control form-control-sm" type="time" required
+              <label class="form-label" for="normalOverTimeHoursElm">OT rate - 1.5 times</label>
+              <input id="normalOverTimeHoursElm" [(ngModel)]="normalOverTimeHours" (input)="updateOverTime()"
+                     [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="time" required
                      placeholder="Enter Normal Overtime Hours">
             </div>
             <div class="form-group p-1">
-              <label for="specialOverTimeHoursElm">Overtime Hours in Poya Days and Government Holidays</label>
-              <input id="specialOverTimeHoursElm" class="form-control form-control-sm" type="time" required
+              <label class="form-label" for="specialOverTimeHoursElm">OT rate - 2 times</label>
+              <input id="specialOverTimeHoursElm" [(ngModel)]="specialOverTimeHours" (input)="updateOverTime()"
+                     [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="time" required
                      placeholder="Enter Overtime Hours">
             </div>
           </div>
@@ -80,93 +153,110 @@
             <div id="additions" class="col-md-6 bg-primary">
               <h3>Salary Additions</h3>
               <div class="form-group p-1">
-                <label for="salaryIncrementElm">Salary Increment</label>
+                <label class="form-label" for="salaryIncrementElm">Salary Increment</label>
                 <input id="salaryIncrementElm" class="form-control form-control-sm" type="number" required
-                       placeholder="Enter Salary Increment" step="0.01">
+                       placeholder="Enter Salary Increment" step="0.01" [(ngModel)]="salaryIncrement"
+                       (input)="updateGrossSalary()" [ngModelOptions]="{ standalone: true }">
               </div>
               <div class="form-group p-1">
-                <label for="livingAllowanceElm">Cost of Living Allowance</label>
+                <label class="form-label" for="livingAllowanceElm">Cost of Living Allowance</label>
                 <input id="livingAllowanceElm" class="form-control form-control-sm" type="number" required
-                       placeholder="Enter Cost of Living Allowance" step="0.01">
+                       placeholder="Enter Cost of Living Allowance" step="0.01" [(ngModel)]="livingAllowance"
+                       (input)="updateGrossSalary()" [ngModelOptions]="{ standalone: true }">
               </div>
               <div class="form-group p-1">
-                <label for="foodAllowanceElm">Food Allowance</label>
+                <label class="form-label" for="foodAllowanceElm">Food Allowance</label>
                 <input id="foodAllowanceElm" class="form-control form-control-sm" type="number" required
-                       placeholder="Enter Food Allowance" step="0.01">
+                       placeholder="Enter Food Allowance" step="0.01" [(ngModel)]="foodAllowance"
+                       (input)="updateGrossSalary()" [ngModelOptions]="{ standalone: true }">
               </div>
               <div class="form-group p-1">
-                <label for="conveyanceAllowanceElm">Conveyance Allowance</label>
+                <label class="form-label" for="conveyanceAllowanceElm">Conveyance Allowance</label>
                 <input id="conveyanceAllowanceElm" class="form-control form-control-sm" type="number" required
-                       placeholder="Enter Conveyance Allowance" step="0.01">
+                       placeholder="Enter Conveyance Allowance" step="0.01" [(ngModel)]="conveyanceAllowance"
+                       (input)="updateGrossSalary()" [ngModelOptions]="{ standalone: true }">
               </div>
               <div class="form-group p-1">
-                <label for="medicalAllowanceElm">Medical Allowance</label>
+                <label class="form-label" for="medicalAllowanceElm">Medical Allowance</label>
                 <input id="medicalAllowanceElm" class="form-control form-control-sm" type="number" required
-                       placeholder="Enter Medical Allowance" step="0.01">
+                       placeholder="Enter Medical Allowance" step="0.01" [(ngModel)]="medicalAllowance"
+                       (input)="updateGrossSalary()" [ngModelOptions]="{ standalone: true }">
               </div>
               <div class="form-group p-1">
-                <label for="grossSalaryElm">Gross Salary</label>
+                <label class="form-label" for="grossSalaryElm">Gross Salary</label>
                 <br>
-                <label id="grossSalaryElm">852.00</label>
+                <label class="form-label" id="grossSalaryElm">{{ grossSalary.toFixed(2) }}</label>
               </div>
               <div class="form-group p-1">
-                <label for="overTimeElm">Over Time</label>
+                <label class="form-label" for="overTimeElm">Over Time</label>
                 <br>
-                <label id="overTimeElm">5000.00</label>
+                <label class="form-label" id="overTimeElm">{{overTime | number: '1.2-2'}}</label>
               </div>
               <div class="form-group p-1">
-                <label for="reimbursementsElm">Reimbursements</label>
-                <input id="reimbursementsElm" class="form-control form-control-sm" type="number" required
+                <label class="form-label" for="reimbursementsElm">Reimbursements</label>
+                <input id="reimbursementsElm" [(ngModel)]="reimbursements" (input)="updateBeforeSalaryDeduction()"
+                       [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number"
+                       required
                        placeholder="Enter Reimbursements" step="0.01">
               </div>
               <div class="form-group p-1">
-                <label for="bonusElm">Bonus</label>
-                <input id="bonusElm" class="form-control form-control-sm" type="number" required
+                <label class="form-label" for="bonusElm">Bonus</label>
+                <input id="bonusElm" [(ngModel)]="bonus" (input)="updateBeforeSalaryDeduction()"
+                       [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number"
+                       required
                        placeholder="Enter Bonus" step="0.01">
               </div>
               <div class="form-group p-1">
-                <label for="beforeDeductionElm">Salary Before Deduction</label>
+                <label class="form-label" for="beforeDeductionElm">Salary Before Deduction</label>
                 <br>
-                <label id="beforeDeductionElm">852.00</label>
+                <label class="form-label" id="beforeDeductionElm">{{salaryBeforeDeduction | number: '1.2-2'}}</label>
               </div>
             </div>
 
             <div id="deductions" class="col-md-6 bg-warning">
               <h3>Salary Deductions</h3>
               <div class="form-group p-1">
-                <label for="noPayDeductionsElm">No Pay Days Deductions</label>
+                <label class="form-label" for="noPayDeductionsElm">No Pay Days Deductions</label>
                 <br>
-                <label id="noPayDeductionsElm">200.00</label>
+                <label class="form-label" id="noPayDeductionsElm">{{noPayDeduction | number: '1.2-2'}}</label>
               </div>
               <div class="form-group p-1">
-                <label for="salaryAdvanceElm">Salary Advance</label>
-                <input id="salaryAdvanceElm" class="form-control form-control-sm" type="number" required
+                <label class="form-label" for="salaryAdvanceElm">Salary Advance</label>
+                <input id="salaryAdvanceElm" [(ngModel)]="salaryAdvance" (input)="updateTotalDeduction()"
+                       [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number"
+                       required
                        placeholder="Enter Salary Advance" step="0.01">
               </div>
               <div class="form-group p-1">
-                <label for="welfareServiceElm">welfare services</label>
-                <input id="welfareServiceElm" class="form-control form-control-sm" type="number" required
+                <label class="form-label" for="welfareServiceElm">welfare services</label>
+                <input id="welfareServiceElm" [(ngModel)]="welfareService" (input)="updateTotalDeduction()"
+                       [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number"
+                       required
                        placeholder="Enter welfare services deductions" step="0.01">
               </div>
               <div class="form-group p-1">
-                <label for="insuranceElm">insurance</label>
-                <input id="insuranceElm" class="form-control form-control-sm" type="number" required
+                <label class="form-label" for="insuranceElm">insurance</label>
+                <input id="insuranceElm" [(ngModel)]="insurance" (input)="updateTotalDeduction()"
+                       [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number"
+                       required
                        placeholder="Enter insurance" step="0.01">
               </div>
               <div class="form-group p-1">
-                <label for="apitElm">Advance Personal Income Tax (APIT)</label>
-                <input id="apitElm" class="form-control form-control-sm" type="number" required placeholder="Enter APIT"
+                <label class="form-label" for="apitElm">Advance Personal Income Tax (APIT)</label>
+                <input id="apitElm" [(ngModel)]="apit" (input)="updateTotalDeduction()"
+                       [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number"
+                       required placeholder="Enter APIT"
                        step="0.01">
               </div>
               <div class="form-group p-1">
-                <label for="epfEmployeedeductionElm">EPF Employee Contribution (8%)</label>
+                <label class="form-label" for="epfEmployeedeductionElm">EPF Employee Contribution (8%)</label>
                 <br>
-                <label id="epfEmployeedeductionElm">852.00</label>
+                <label class="form-label" id="epfEmployeedeductionElm">{{epfEmployeeContribution  | number: '1.2-2'}}</label>
               </div>
               <div class="form-group p-1">
-                <label for="totalDeductionElm">Total Deductions</label>
+                <label class="form-label" for="totalDeductionElm">Total Deductions</label>
                 <br>
-                <label id="totalDeductionElm">852.00</label>
+                <label class="form-label" id="totalDeductionElm">{{totalDeductions | number: '1.2-2'}}</label>
               </div>
 
 
@@ -174,27 +264,23 @@
 
           </div>
           <div class="form-group p-1">
-            <label for="netSalaryElm">Net Payable Salary</label>
+            <label class="form-label" for="netSalaryElm">Net Payable Salary</label>
             <br>
-            <label id="netSalaryElm">852.00</label>
+            <label class="form-label" id="netSalaryElm">{{netPayableSalary | number: '1.2-2'}}</label>
           </div>
           <div class="form-group p-1">
-            <label for="employerEPFElm">EPF Employer Contribution(12%)</label>
+            <label class="form-label" for="employerEPFElm">EPF Employer Contribution(12%)</label>
             <br>
-            <label id="employerEPFElm">852.00</label>
+            <label class="form-label" id="employerEPFElm">{{epfEmployerContribution| number: '1.2-2'}}</label>
           </div>
           <div class="form-group p-1">
-            <label for="employerETFElm">ETF Employer Contribution (3%)</label>
+            <label class="form-label" for="employerETFElm">ETF Employer Contribution (3%)</label>
             <br>
-            <label id="employerETFElm">852.00</label>
+            <label class="form-label" id="employerETFElm">{{etfEmployerContribution| number: '1.2-2'}}</label>
           </div>
-          <div class="form-group p-1">
-            <label for="employerInsuranceElm">Employer Insurance Contribution</label>
-            <br>
-            <label id="employerInsuranceElm">852.00</label>
-          </div>
-          <button id="saveBtn" type="submit" class=" m-2">Save</button>
-          <button id="clearBtn" type="reset" class="btn-warning">Clear</button>
+
+          <button #saveBtn  type="submit" class=" m-2">Save</button>
+          <button #clearBtn type="reset" class="btn-warning">Clear</button>
 
         </form>
 
@@ -204,6 +290,7 @@
           <table class="table table-bordered table-sm table-hover table-striped">
             <thead>
             <tr>
+              <th>ID</th>
               <th>Emp ID</th>
               <th>Year</th>
               <th>Month</th>
@@ -233,45 +320,55 @@
               <th>Net Sallary</th>
               <th>EPF Employer</th>
               <th>ETF Employer</th>
-              <th>Employer Insurance</th>
-
+              <th></th>
             </tr>
 
             </thead>
-            <tbody>
+            <tbody *ngFor="let salary of salaryList">
             <tr>
-              <td>EMP001</td>
-              <td>2023</td>
-              <td>July</td>
-              <td>2000.00</td>
-              <td>12</td>
-              <td>2</td>
-              <td>2</td>
-              <td>10:00</td>
-              <td>02:30</td>
-              <td>100.00</td>
-              <td>50.00</td>
-              <td>20.00</td>
-              <td>30.00</td>
-              <td>40.00</td>
-              <td>2250.00</td>
-              <td>500.00</td>
-              <td>50.00</td>
-              <td>100.00</td>
-              <td>2900.00</td>
-              <td>50.00</td>
-              <td>20.00</td>
-              <td>10.00</td>
-              <td>5.00</td>
-              <td>15.00</td>
-              <td>200.00</td>
-              <td>170.00</td>
-              <td>530.00</td>
-              <td>2370.00</td>
-              <td>200.00</td>
-              <td>60.00</td>
-              <td>20.00</td>
-
+              <td>{{salary.id}}</td>
+              <td>{{salary.employeeID}}</td>
+              <td>{{salary.year}}</td>
+              <td>{{salary.month}}</td>
+              <td>{{salary.basicSalary}}</td>
+              <td>{{salary.leaveAllowed}}</td>
+              <td>{{salary.leaveTaken}}</td>
+              <td>{{salary.noPayLeave}}</td>
+              <td>{{salary.normalOverTimeHours}}</td>
+              <td>{{salary.specialOverTimeHours}}</td>
+              <td>{{salary.salaryIncrement}}</td>
+              <td>{{salary.conveyanceAllowance}}</td>
+              <td>{{salary.foodAllowance}}</td>
+              <td>{{salary.conveyanceAllowance}}</td>
+              <td>{{salary.medicalAllowance}}</td>
+              <td>{{salary.grossSalary}}</td>
+              <td>{{salary.overTime}}</td>
+              <td>{{salary.reimbursements}}</td>
+              <td>{{salary.bonus}}</td>
+              <td>{{salary.salaryBeforeDeduction}}</td>
+              <td>{{salary.noPayDeduction}}</td>
+              <td>{{salary.salaryAdvance}}</td>
+              <td>{{salary.welfareService}}</td>
+              <td>{{salary.insurance}}</td>
+              <td>{{salary.apit}}</td>
+              <td>{{salary.epfEmployeeContribution}}</td>
+              <td>{{salary.totalDeductions}}</td>
+              <td>{{salary.netPayableSalary}}</td>
+              <td>{{salary.epfEmployerContribution}}</td>
+              <td>{{salary.etfEmployerContribution}}</td>
+              <td>
+                <div class="delete p-1" (click)="deleteSalary(salary)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                  </svg>
+                </div>
+                <div class="edit" (click)="editSalary(salary,saveBtn)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                  </svg>
+                </div>
+              </td>
             </tr>
 
             </tbody>
