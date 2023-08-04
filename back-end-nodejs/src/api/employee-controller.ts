@@ -216,6 +216,7 @@ router.post('/printsalarysheet', async (req, res) => {
     const requestMonth = printRequest[1];
 
     const salaryList = await pool.query('SELECT * FROM salary WHERE year=? AND month=?',[requestYear,requestMonth]);
+    const employeeList = await pool.query('SELECT * FROM employee');
 
     const formattedSalaryList: Salary[] = salaryList.map((row: any) => {
         return {
@@ -251,7 +252,29 @@ router.post('/printsalarysheet', async (req, res) => {
             etfEmployerContribution: row.etf_employer_contribution
         };
     });
-    res.json(formattedSalaryList);
+
+    const formattedEmployee: Employee[] = employeeList.map((row: any) => {
+        return {
+            employeeID: row.employee_id,
+            fullName: row.full_name,
+            idNo: row.id_no,
+            gender: row.gender,
+            dob : row.dob,
+            address: row.address,
+            contactNumber: row.contact_number,
+            email: row.email,
+            department: row.department,
+            post: row.post,
+            epfNumber: row.epf_number,
+            basicSalary: row.basic_salary,
+            bankName:row.bank_name,
+            branchName: row.branch_name,
+            accNumber: row.acc_number,
+            imageUrl: row.image_url
+        };
+    });
+    const responseObject = [formattedSalaryList,formattedEmployee];
+    res.json(responseObject);
 });
 
 

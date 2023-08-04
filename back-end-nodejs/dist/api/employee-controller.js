@@ -35,7 +35,6 @@ function initPool() {
 exports.router.get("/employeeID", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const employeeIDsArray = yield pool.query('SELECT employee_id FROM employee');
     const formattedEmployeeIDs = employeeIDsArray.map((row) => row.employee_id);
-    console.log(formattedEmployeeIDs);
     res.json(formattedEmployeeIDs);
 }));
 exports.router.get("/getBasicSalary/:employeeID", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -53,7 +52,6 @@ exports.router.get("/year", (req, res) => __awaiter(void 0, void 0, void 0, func
                 year: row.year
             };
         });
-        console.log(formattedYears);
         res.json(formattedYears);
     }
     catch (err) {
@@ -140,7 +138,6 @@ exports.router.post('/print', (req, res) => __awaiter(void 0, void 0, void 0, fu
         };
     });
     const responseObject = [formattedSalary, formattedEmployee];
-    console.log(responseObject);
     res.json(responseObject);
 }));
 exports.router.post('/printsalarysheet', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -148,6 +145,7 @@ exports.router.post('/printsalarysheet', (req, res) => __awaiter(void 0, void 0,
     const requestYear = printRequest[0];
     const requestMonth = printRequest[1];
     const salaryList = yield pool.query('SELECT * FROM salary WHERE year=? AND month=?', [requestYear, requestMonth]);
+    const employeeList = yield pool.query('SELECT * FROM employee');
     const formattedSalaryList = salaryList.map((row) => {
         return {
             id: row.id,
@@ -182,7 +180,28 @@ exports.router.post('/printsalarysheet', (req, res) => __awaiter(void 0, void 0,
             etfEmployerContribution: row.etf_employer_contribution
         };
     });
-    res.json(formattedSalaryList);
+    const formattedEmployee = employeeList.map((row) => {
+        return {
+            employeeID: row.employee_id,
+            fullName: row.full_name,
+            idNo: row.id_no,
+            gender: row.gender,
+            dob: row.dob,
+            address: row.address,
+            contactNumber: row.contact_number,
+            email: row.email,
+            department: row.department,
+            post: row.post,
+            epfNumber: row.epf_number,
+            basicSalary: row.basic_salary,
+            bankName: row.bank_name,
+            branchName: row.branch_name,
+            accNumber: row.acc_number,
+            imageUrl: row.image_url
+        };
+    });
+    const responseObject = [formattedSalaryList, formattedEmployee];
+    res.json(responseObject);
 }));
 exports.router.post('/printepfsheet', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const printRequest = req.body;
@@ -244,7 +263,6 @@ exports.router.post('/printepfsheet', (req, res) => __awaiter(void 0, void 0, vo
             imageUrl: row.image_url
         };
     });
-    console.log(formattedEmployee);
     const responseObject = [formattedSalaryList, formattedEmployee];
     res.json(responseObject);
 }));

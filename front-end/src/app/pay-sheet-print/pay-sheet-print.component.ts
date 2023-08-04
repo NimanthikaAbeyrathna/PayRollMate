@@ -26,6 +26,7 @@ export class PaySheetPrintComponent {
     salarySheetSelectedYear: number = 0;
     salarySheetSelectedMonth: string = '';
     salarySheetList: Array<Salary> = [];
+    salarySheetEmployeeList:Array<Employee>=[];
     epfSheetSelectedYear: number = 0;
     epfSheetSelectedMonth: string = '';
     salaryEPFSheetList:Array<Salary>=[];
@@ -354,12 +355,13 @@ export class PaySheetPrintComponent {
 
         this.http.post<Array<any>>(`${environment.apiUrl2}/employee/printsalarysheet`, printRequestArray).subscribe(
             responseObject => {
-                this.salarySheetList = responseObject;
+              this.salarySheetList = responseObject[0];
+              this.salarySheetEmployeeList = responseObject[1];
 
                 const salarySheetWindow = open("", `_blank`, "popup=true,width=600");
 
                 // @ts-ignore
-                salarySheetWindow.document.write(this.getSalarySheetDesignHTML(this.salarySheetList));
+                salarySheetWindow.document.write(this.getSalarySheetDesignHTML(this.salarySheetList,this.salarySheetEmployeeList ));
             },
             error => {
                 console.error('Error fetching salary:', error);
@@ -368,7 +370,7 @@ export class PaySheetPrintComponent {
     }
 
 
-    getSalarySheetDesignHTML(salarySheetList: any) {
+    getSalarySheetDesignHTML(salarySheetList: any,salarySheetEmployeeList:any) {
 
         const totalBasicSalary = salarySheetList.reduce((accumulator: number, salary: any) => {
             return accumulator + salary.basicSalary;
@@ -555,6 +557,7 @@ export class PaySheetPrintComponent {
                     <tr>
                         <th>No</th>
                         <th>Employee ID</th>
+                        <th>Name</th>
                         <th>Basic salary</th>
                         <th>Leave Alowed</th>
                         <th>Leave Taken</th>
@@ -586,11 +589,12 @@ export class PaySheetPrintComponent {
 
                 </thead>
                 <tbody>
-                ${this.salarySheetRowGenerator(salarySheetList)}
+                ${this.salarySheetRowGenerator(salarySheetList,salarySheetEmployeeList)}
                 </tbody>
                 <tfoot>
                     <tr>
                         <td>total : ${salarySheetList.length}</td>
+                        <td></td>
                         <td></td>
                         <td>${totalBasicSalary}</td>
                         <td></td>
@@ -645,7 +649,7 @@ export class PaySheetPrintComponent {
     }
 
     // @ts-ignore
-    salarySheetRowGenerator(salarySheetList: Array<Salary>) {
+    salarySheetRowGenerator(salarySheetList: Array<Salary>,salarySheetEmployeeList:Array<Employee>) {
         let i = 0;
         let tableRows = "";
 
@@ -654,6 +658,7 @@ export class PaySheetPrintComponent {
             tableRows += ` <tr>
                     <td>${i}</td>
                     <td>${salary.employeeID}</td>
+                    <td>${this.findEmployeeNameInSalarySheet(salary.employeeID,salarySheetEmployeeList)}</td>
                     <td>${salary.basicSalary}</td>
                     <td>${salary.leaveAllowed}</td>
                     <td>${salary.leaveTaken}</td>
@@ -685,6 +690,12 @@ export class PaySheetPrintComponent {
 
         return tableRows;
     }
+
+  findEmployeeNameInSalarySheet(employeeID:any,salarySheetEmployeeList:any){
+    const employee = this.salarySheetEmployeeList.find(emp => emp.employeeID === employeeID);
+    // @ts-ignore
+    return employee.fullName;
+  }
 
     printepfSheet($event: any) {
         $event.preventDefault();
