@@ -79,7 +79,7 @@ router.get("/employeeID", async (req, res) => {
 
     const employeeIDsArray = await pool.query('SELECT employee_id FROM employee');
     const formattedEmployeeIDs = employeeIDsArray.map((row: any) => row.employee_id);
-    console.log(formattedEmployeeIDs);
+
     res.json(formattedEmployeeIDs);
 });
 
@@ -102,7 +102,7 @@ router.get("/year", async (req, res) => {
                 year: row.year
             };
         });
-        console.log(formattedYears);
+
         res.json(formattedYears);
     } catch (err) {
         console.error('Error fetching years:', err);
@@ -203,7 +203,7 @@ router.post('/print', async (req, res) => {
         };
     });
     const responseObject = [formattedSalary,formattedEmployee];
-    console.log(responseObject);
+
     res.json(responseObject);
 });
 
@@ -321,7 +321,7 @@ router.post('/printepfsheet', async (req, res) => {
             imageUrl: row.image_url
         };
     });
-    console.log(formattedEmployee)
+
     const responseObject = [formattedSalaryList,formattedEmployee];
     res.json(responseObject);
 });

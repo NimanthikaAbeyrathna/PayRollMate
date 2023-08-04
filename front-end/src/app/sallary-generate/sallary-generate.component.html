@@ -56,7 +56,7 @@
               <h1>Enter new Year</h1>
               <div>
                 <input type="number" #yearInputElm placeholder="eg -: 2020">
-                <button class="btn-primary m-2" (click)="saveYear(yearInputElm)">Save</button>
+                <button class="btn-primary m-2" (click)="saveYear($event,yearInputElm)">Save</button>
               </div>
               <table class="table">
                 <thead>

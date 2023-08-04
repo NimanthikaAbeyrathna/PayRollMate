@@ -93,7 +93,8 @@ export class SallaryGenerateComponent {
         this.isPopupVisible = false;
     }
 
-    saveYear(yearInputElm: HTMLInputElement) {
+  saveYear($event: Event, yearInputElm: HTMLInputElement) {
+      $event.preventDefault();
 
         const year = new Year(
             0,
