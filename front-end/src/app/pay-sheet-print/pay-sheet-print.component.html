@@ -155,6 +155,56 @@
         <button type="reset" class="btn btn-warning">Clear</button>
 
       </form>
+
+      <form id="bankSalaryPrint" class=" p-2" action="#" (ngSubmit)="printbankSalarySheet($event)">
+
+        <h3>Print salary sheet according to bank</h3>
+
+        <div class="form-floating m-2">
+            <select class="form-select" id="bankSelect" name="selectYear" aria-label="Floating label select example"
+                    [(ngModel)]="bankSalarySheetSelectedBankName" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled selected></option>
+              <option *ngFor="let bank of bankList" [value]="bank.bankName">{{ bank.bankName }}</option>
+            </select>
+            <label class="form-label" for="bankSelect" style="z-index: 0">Select Bank</label>
+        </div>
+
+        <div class="form-floating m-2">
+          <select class="form-select" id="bankSalarySheetYearSelect" name="selectYear" aria-label="Floating label select example"
+                  [(ngModel)]="bankSalarySheetSelectedYear" [ngModelOptions]="{ standalone: true }">
+            <option value="" disabled selected></option>
+            <option *ngFor="let year of yearList" [value]="year.year">{{ year.year }}</option>
+          </select>
+          <label class="form-label" for="salarySheetYearSelect" style="z-index: 0">Select year</label>
+        </div>
+
+        <div class="form-floating m-2">
+          <select class="form-select" id="bankSalarySheetMonthSelect" name="selectedMonth" aria-label="Floating label select example"
+                  [(ngModel)]="bankSalarySheetSelectedMonth" [ngModelOptions]="{ standalone: true }">
+            <option value="" disabled selected></option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+          <label class="form-label" for="salarySheetMonthSelect" style="z-index: 0">Select Month</label>
+        </div>
+
+        <br>
+        <button class="btn btn-primary m-2" type="submit">Print</button>
+        <button type="reset" class="btn btn-warning">Clear</button>
+
+      </form>
+
+
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

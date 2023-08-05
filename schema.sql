@@ -26,6 +26,12 @@ CREATE TABLE IF NOT EXISTS year(
     year INT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS bank(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    bankName VARCHAR(100) NOT NULL
+);
+
+
 CREATE TABLE salary (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         employeeid VARCHAR(100) NOT NULL,

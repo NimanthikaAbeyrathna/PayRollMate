@@ -29,7 +29,7 @@
       <div id="leftDiv" class="flex-item p-3">
         <form class="container" (ngSubmit)="onFormSubmit($event,employeeIDElm,
             fullNameElm, idNoElm, genderElm, dobElm, addressElm, contactNumberElm, emailElm, departmentElm,
-            postElm, epfNumberElm, basicSalaryElm, bankElm, branchNameElm, accNumberElm,submit,previewImage)">
+            postElm, epfNumberElm, basicSalaryElm, branchNameElm, accNumberElm,submit,previewImage)">
           <div class="form-group p-1">
             <label>Employee ID:</label>
             <input #employeeIDElm [(ngModel)]="selectedEmployee.employeeID" [ngModelOptions]="{ standalone: true }"  class="form-control form-control-sm" type="text" required placeholder="Enter Employee ID">
@@ -88,10 +88,57 @@
             <label>Basic Salary:</label>
             <input #basicSalaryElm [(ngModel)]="selectedEmployee.basicSalary" [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="number" required placeholder="Enter Basic Salary" step="0.01">
           </div>
-          <div class="form-group p-1">
-            <label>Bank Name</label>
-            <input #bankElm [(ngModel)]="selectedEmployee.bankName" [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="text" required placeholder="Enter Bank Name">
+
+          <!--///////////////////////////////////////-->
+          <div class="form-group p-1 d-flex">
+            <div class="d-flex flex-column " id="bankSelectDiv">
+            <label class="form-label" for="bankSelect" style="z-index: 0">Select Bank :</label>
+            <select class="form-select" id="bankSelect" name="selectYear" aria-label="Floating label select example"
+                    [(ngModel)]="selectedBank" [ngModelOptions]="{ standalone: true }">
+              <option value="" disabled selected></option>
+              <option *ngFor="let bank of bankList" [value]="bank.bankName">{{ bank.bankName }}</option>
+            </select>
+            </div>
+            <button type="button" class="btn btn-primary m-2" (click)="showPopup()">+</button>
           </div>
+
+          <!--year enter popup-->
+          <div class="popup-container" *ngIf="isPopupVisible">
+            <div class="popup">
+              <h1>Enter new Bank</h1>
+              <div>
+                <input type="text" #bankNameInputElm placeholder="eg -: BOC">
+                <button class="btn-primary m-2" (click)="saveBank($event,bankNameInputElm)">Save</button>
+              </div>
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th>Bank</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let bank of bankList">
+                  <td scope="col">{{bank.id}}</td>
+                  <td>{{bank.bankName}}</td>
+                  <td>
+                    <div class="delete p-1" (click)="deleteBank(bank)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                           class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path
+                          d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                      </svg>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <button (click)="hidePopup()">Close</button>
+            </div>
+          </div>
+
+          <!--//////////////////////////////////////////-->
           <div class="form-group p-1">
             <label>Branch Name</label>
             <input #branchNameElm [(ngModel)]="selectedEmployee.branchName" [ngModelOptions]="{ standalone: true }" class="form-control form-control-sm" type="text" required placeholder="Enter Branch Name">

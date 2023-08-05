@@ -5,6 +5,8 @@ import {map, shareReplay} from 'rxjs/operators';
 import {Employee} from "../dto/employee";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment.development";
+import {Year} from "../dto/year";
+import {Bank} from "../dto/bank";
 
 
 @Component({
@@ -19,6 +21,9 @@ export class NewEmployeeComponent {
   file = null;
   selectedEmployee: any = {};
   isEditMode = false;
+  isPopupVisible: boolean = false;
+  bankList: Array<Bank> = [];
+  selectedBank: string='';
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -41,6 +46,8 @@ export class NewEmployeeComponent {
     http.get<Array<Employee>>(`${environment.apiUrl1}/employee`).subscribe(employeeList => {
       this.employeeList = employeeList;
     });
+
+    this.getBanks();
   }
 
 
@@ -49,7 +56,7 @@ export class NewEmployeeComponent {
                addressElm: HTMLInputElement, contactNumberElm: HTMLInputElement,
                emailElm: HTMLInputElement, departmentElm: HTMLInputElement,
                postElm: HTMLInputElement, epfNumberElm: HTMLInputElement,
-               basicSalaryElm: HTMLInputElement, bankElm: HTMLInputElement,
+               basicSalaryElm: HTMLInputElement,
                branchNameElm: HTMLInputElement, accNumberElm: HTMLInputElement,
                submit: HTMLButtonElement, previewImage: HTMLDivElement) {
     event.preventDefault();
@@ -67,7 +74,7 @@ export class NewEmployeeComponent {
       postElm.value,
       epfNumberElm.value,
       +basicSalaryElm.value,
-      bankElm.value,
+      this.selectedBank,
       branchNameElm.value,
       +accNumberElm.value,
       ""
@@ -145,6 +152,7 @@ export class NewEmployeeComponent {
     /*spread syntax in JavaScript/TypeScript. This syntax is used to create a shallow copy of the employee object*/
     this.selectedEmployee = {...employee};
     previewImage.style.backgroundImage = `url(${employee.imageUrl})`;
+    this.selectedBank=employee.bankName;
     submit.textContent = 'Update';
     this.isEditMode = true;
 
@@ -154,20 +162,20 @@ export class NewEmployeeComponent {
   // @ts-ignore
   updateEmployee(employee, submit) {
 
-      this.http.patch<Employee>(`${environment.apiUrl1}/employee/${employee.employeeID} `, employee)
-        .subscribe(
-          () => {
-            console.log(`successfully update ${employee.employeeID}`);
-            submit.textContent = 'Save';
-            this.isEditMode = false;
-            this.sendFiles(employee);
-            location.reload();
-          },
-          (error) => {
+    this.http.patch<Employee>(`${environment.apiUrl1}/employee/${employee.employeeID} `, employee)
+      .subscribe(
+        () => {
+          console.log(`successfully update ${employee.employeeID}`);
+          submit.textContent = 'Save';
+          this.isEditMode = false;
+          this.sendFiles(employee);
+          location.reload();
+        },
+        (error) => {
 
-            console.error('Error updating employee:', error);
-          }
-        );
+          console.error('Error updating employee:', error);
+        }
+      );
 
 
   }
@@ -175,6 +183,55 @@ export class NewEmployeeComponent {
   clearForm(submit: HTMLButtonElement, previewImage: HTMLDivElement) {
     submit.textContent = 'Save';
     previewImage.style.backgroundImage = `url("")`;
+  }
+
+
+  showPopup() {
+    this.isPopupVisible = true;
+  }
+
+  hidePopup() {
+    this.isPopupVisible = false;
+  }
+
+  getBanks() {
+    this.http.get<Array<Bank>>(`${environment.apiUrl2}/employee/bank`).subscribe(
+      formattedBanks => {
+        this.bankList = formattedBanks;
+      },
+      error => {
+        console.error('Error fetching banks:', error);
+      }
+    );
+  }
+
+  saveBank($event: MouseEvent, bankNameInputElm: HTMLInputElement) {
+    $event.preventDefault();
+
+    const bank = new Bank(
+      0,
+      bankNameInputElm.value
+    );
+
+    this.http.post<Bank>(`${environment.apiUrl2}/employee/bank`, bank)
+      .subscribe((response: any) => {
+          // Success handling here
+          this.bankList.push(bank);
+          this.getBanks();
+          bankNameInputElm.value = '';
+          bankNameInputElm.focus();
+        },
+        (error) => {
+          console.error('Error occurred when saving bank', error);
+        });
+  }
+
+  deleteBank(bank: Bank) {
+    this.http.delete(`${environment.apiUrl2}/employee/bank/${bank.id}`).subscribe(data => {
+      const index = this.bankList.indexOf(bank);
+      this.bankList.splice(index, 1);
+    });
+
   }
 }
 

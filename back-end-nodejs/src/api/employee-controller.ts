@@ -42,6 +42,11 @@ type Year = {
     year:number
 }
 
+type Bank = {
+    id:number,
+    bankName:string
+}
+
 type Salary={
     id :number,
     employeeID: string,
@@ -94,7 +99,6 @@ router.get("/getBasicSalary/:employeeID", async (req, res) => {
 
 router.get("/year", async (req, res) => {
     try {
-        console.log('years works')
         const years = await pool.query('SELECT * FROM year');
         const formattedYears: Year[] = years.map((row: any) => {
             return {
@@ -134,6 +138,51 @@ router.delete("/year/:employeeID", async (req, res) => {
 
     res.sendStatus(result.affectedRows ? 204 : 404);
 });
+
+/*////////////////////////////////////////////*/
+router.get("/bank", async (req, res) => {
+    try {
+        const banks = await pool.query('SELECT * FROM bank');
+
+        const formattedBanks: Bank[] = banks.map((row: any) => {
+            return {
+                id: row.id,
+                bankName: row.bankName
+            };
+        });
+
+        res.json(formattedBanks);
+    } catch (err) {
+        console.error('Error fetching banks:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+router.post("/bank", async (req, res) => {
+
+    const  bankData  = req.body;
+    if (!bankData) {
+        res.sendStatus(400);
+        return
+    }
+
+    const result = await pool.query('INSERT INTO bank (bankName) VALUES (?)', [bankData.bankName]);
+
+    const bank = {
+        id: result.insertId,
+        bankName: bankData.bankName,
+    };
+
+    res.status(201).json(bank);
+});
+
+router.delete("/bank/:id", async (req, res) => {
+
+    const result = await pool.query('DELETE  FROM  bank WHERE  id = ?', [req.params.id]);
+
+    res.sendStatus(result.affectedRows ? 204 : 404);
+});
+/*////////////////////////////////////////////*/
 
 
 
@@ -290,6 +339,84 @@ router.post('/printepfsheet', async (req, res) => {
 
 
     const formattedSalaryList: Salary[] = salaryList.map((row: any) => {
+        return {
+            id :row.id,
+            employeeID: row.employeeid,
+            year: row.year,
+            month: row.month,
+            basicSalary: row.basicsalary,
+            leaveAllowed: row.leave_allowed,
+            leaveTaken: row.leave_taken,
+            noPayLeave: row.no_pay_leave,
+            normalOverTimeHours: row.normal_overtime_hours,
+            specialOverTimeHours: row.special_overtime_hours,
+            salaryIncrement: row.salary_increment,
+            livingAllowance: row.living_allowance,
+            foodAllowance: row.food_allowance,
+            conveyanceAllowance: row.conveyance_allowance,
+            medicalAllowance: row.medical_allowance,
+            grossSalary: row.gross_salary,
+            overTime: row.overtime,
+            reimbursements: row.reimbursements,
+            bonus: row.bonus,
+            salaryBeforeDeduction: row.salary_before_deduction,
+            noPayDeduction: row.no_pay_deduction,
+            salaryAdvance: row.salary_advance,
+            welfareService: row.welfare_service,
+            insurance: row.insurance,
+            apit: row.apit,
+            epfEmployeeContribution: row.epf_employee_contribution,
+            totalDeductions: row.total_deductions,
+            netPayableSalary: row.net_payable_salary,
+            epfEmployerContribution: row.epf_employer_contribution,
+            etfEmployerContribution: row.etf_employer_contribution
+        };
+    });
+
+    const formattedEmployee: Employee[] = employeeList.map((row: any) => {
+        return {
+            employeeID: row.employee_id,
+            fullName: row.full_name,
+            idNo: row.id_no,
+            gender: row.gender,
+            dob : row.dob,
+            address: row.address,
+            contactNumber: row.contact_number,
+            email: row.email,
+            department: row.department,
+            post: row.post,
+            epfNumber: row.epf_number,
+            basicSalary: row.basic_salary,
+            bankName:row.bank_name,
+            branchName: row.branch_name,
+            accNumber: row.acc_number,
+            imageUrl: row.image_url
+        };
+    });
+
+    const responseObject = [formattedSalaryList,formattedEmployee];
+    res.json(responseObject);
+});
+
+
+router.post('/printbanksalarysheet', async (req, res) => {
+
+    const printRequest = req.body;
+    const requestBank = printRequest[0]
+    const requestYear = printRequest[1];
+    const requestMonth = printRequest[2];
+
+    const employeeList = await pool.query('SELECT * FROM employee WHERE bank_name=?',[requestBank]);
+
+    const salaryListOfRelavantBank:Array<Salary>=[];
+
+    for (const employeeListElement of employeeList) {
+        const salary = await pool.query('SELECT * FROM salary WHERE employeeid=? AND year=? AND month=?',[employeeListElement.employee_id,requestYear,requestMonth]);
+        salaryListOfRelavantBank.push(salary[0]);
+    }
+
+
+    const formattedSalaryList: Salary[] = salaryListOfRelavantBank.map((row: any) => {
         return {
             id :row.id,
             employeeID: row.employeeid,

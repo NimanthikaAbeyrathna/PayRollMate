@@ -7,6 +7,7 @@ import {environment} from "../../environments/environment.development";
 import {Year} from "../dto/year";
 import {Salary} from "../dto/salary";
 import {Employee} from "../dto/employee";
+import {Bank} from "../dto/bank";
 
 @Component({
     selector: 'app-pay-sheet-print',
@@ -31,6 +32,12 @@ export class PaySheetPrintComponent {
     epfSheetSelectedMonth: string = '';
     salaryEPFSheetList:Array<Salary>=[];
     employeeEPFSheetList:Array<Employee>=[];
+    bankSalarySheetSelectedYear: number=0;
+    bankSalarySheetSelectedMonth: string='';
+    salaryBankSalarySheetList:Array<Salary>=[];
+    employeeBankSalarySheetList:Array<Employee>=[];
+    bankSalarySheetSelectedBankName: string='';
+    bankList: Array<Bank>=[];
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
         .pipe(
@@ -49,7 +56,7 @@ export class PaySheetPrintComponent {
             }
         );
         this.getYears();
-
+        this.getBanks()
 
     }
 
@@ -939,5 +946,251 @@ export class PaySheetPrintComponent {
         const employee = this.employeeEPFSheetList.find(emp => emp.employeeID === employeeID);
         // @ts-ignore
         return employee.epfNumber;
+    }
+
+    getBanks() {
+        this.http.get<Array<Bank>>(`${environment.apiUrl2}/employee/bank`).subscribe(
+            formattedBanks => {
+                this.bankList = formattedBanks;
+            },
+            error => {
+                console.error('Error fetching banks:', error);
+            }
+        );
+    }
+
+  printbankSalarySheet($event: any) {
+    $event.preventDefault();
+
+    const printRequestArray = [
+      this.bankSalarySheetSelectedBankName,
+      this.bankSalarySheetSelectedYear,
+      this.bankSalarySheetSelectedMonth
+    ];
+
+    this.http.post<Array<any>>(`${environment.apiUrl2}/employee/printbanksalarysheet`, printRequestArray).subscribe(
+      responseObject => {
+        this.salaryBankSalarySheetList = responseObject[0];
+        this.employeeBankSalarySheetList = responseObject[1];
+
+        const salarySheetWindow = open("", `_blank`, "popup=true,width=600");
+
+        // @ts-ignore
+        salarySheetWindow.document.write(this.getBankSalarySheetDesignHTML(this.salaryBankSalarySheetList,this.employeeBankSalarySheetList));
+      },
+      error => {
+        console.error('Error fetching data:', error);
+      }
+    );
+
+
+  }
+
+  getBankSalarySheetDesignHTML(salaryBankSalarySheetList:any,employeeBankSalarySheetList:any){
+
+      const totalNetSalary = salaryBankSalarySheetList.reduce((accumulator: number, salary: any) => {
+          return accumulator + salary.netPayableSalary;
+      }, 0);
+
+      return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${employeeBankSalarySheetList[0].bankName} Bank Sheet</title>
+    <style>
+          *{
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: grey;
+
+    }
+    #salarySheet{
+      font-size: 10px;
+      background-color: white;
+      width: 148mm;
+      height: 210mm;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 10px;
+      padding: 10px;
+    }
+    #salarySheetContainer{
+      position: relative;
+    }
+     #headerElm{
+      display: flex;
+      width: 100%;
+      justify-content: center;
+
+    }
+    #logo {
+      width: 50px;
+      height: 60px;
+
+    }
+    #logo >img{
+       height: 100%;
+       width: 100%;
+    }
+   h4{
+    text-align: center;
+   }
+   #salarySheetTable{
+    text-align: center;
+    width: 100%;
+    border: 1px solid black;
+    font-size: 10px;
+   }
+   #salarySheetTable th , #salarySheetTable td{
+    border: 1px solid black;
+   }
+   tfoot{
+    font-weight: bold;
+   }
+
+   .labelContainer{
+      display: flex;
+      width: 100%;
+    }
+    .label {
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 5px;
+      width: 100%;
+    }
+
+    .data {
+      margin-bottom: 5px;
+      text-align: left;
+      width: 100%;
+    }
+    </style>
+</head>
+<body>
+    <div id="salarySheet">
+        <div id="salarySheetContainer">
+             <div id="headerElm">
+                <div id="logo">
+                    <img src="../../assets/images/noimage.jpg" alt="#">
+                </div>
+                <h2>ABC company pvt.Ltd</h2>
+            </div>
+
+            <h4>No 29, Goodshed Road, Rathnapura</h4>
+            <h4>081-8527419 , 072-8527413</h4>
+            <h4>Salary Sheet - <span>year : ${salaryBankSalarySheetList[0].year}</span> <span>month : ${salaryBankSalarySheetList[0].month}</span> </h4>
+            <br>
+            <div>
+                <h3>Bank Manager,</h3>
+                <h3>...................... branch,</h3>
+                <h3>${employeeBankSalarySheetList[0].bankName} bank,</h3>
+                <h3>...........................,</h3>
+                <h3>...........................</h3>
+            </div>
+            <br>
+            <table id="salarySheetTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Employee ID</th>
+                        <th>Full Name</th>
+                        <th>NIC</th>
+                        <th>Account No</th>
+                        <th>Branch name</th>
+                        <th>Net Salary</th>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                 ${this.bankSalarySheetRowGenerator(salaryBankSalarySheetList,employeeBankSalarySheetList)}
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>total : ${employeeBankSalarySheetList.length}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>${totalNetSalary}</td>
+
+                    </tr>
+
+                </tfoot>
+            </table>
+            <br>
+
+              <div class="labelContainer height">
+                <label class="label">Prepared By :</label>
+                <div class="data">-------------------</div>
+                <div class="label">date :</div>
+                <div class="data">-------------------</div>
+              </div>
+              <div class="labelContainer height">
+                <label class="label">Approved By :</label>
+                <div class="data">-------------------</div>
+                <div class="label">date :</div>
+                <div class="data">-------------------</div>
+              </div>
+
+        </div>
+    </div>
+</body>
+</html>`;
+  }
+
+  bankSalarySheetRowGenerator(salaryBankSalarySheetList:any,employeeBankSalarySheetList:any){
+    let i = 0;
+    let tableRows = "";
+
+    for (const salary of salaryBankSalarySheetList) {
+      i = i + 1;
+
+      tableRows += `<tr>
+                        <td>${i}</td>
+                        <td>${salary.employeeID}</td>
+                        <td>${this.findEmployeeFullName(salary.employeeID,employeeBankSalarySheetList)}</td>
+                        <td>${this.findEmployeeNICNo(salary.employeeID,employeeBankSalarySheetList)}</td>
+                        <td>${this.findEmployeeAccountNo(salary.employeeID,employeeBankSalarySheetList)}</td>
+                        <td>${this.findEmployeeBankBranchName(salary.employeeID,employeeBankSalarySheetList)}</td>
+                        <td>${salary.netPayableSalary}</td>
+
+                    </tr>`;
+    }
+
+    return tableRows;
+  }
+
+    findEmployeeFullName(employeeID:any,employeeBankSalarySheetList:any){
+        const employee = this.employeeBankSalarySheetList.find(emp => emp.employeeID === employeeID);
+        // @ts-ignore
+        return employee.fullName;
+    }
+
+    findEmployeeNICNo(employeeID:any,employeeBankSalarySheetList:any){
+        const employee = this.employeeBankSalarySheetList.find(emp => emp.employeeID === employeeID);
+        // @ts-ignore
+        return employee.idNo;
+    }
+
+    findEmployeeAccountNo(employeeID:any,employeeBankSalarySheetList:any){
+        const employee = this.employeeBankSalarySheetList.find(emp => emp.employeeID === employeeID);
+        // @ts-ignore
+        return employee.accNumber;
+    }
+
+    findEmployeeBankBranchName(employeeID:any,employeeBankSalarySheetList:any){
+        const employee = this.employeeBankSalarySheetList.find(emp => emp.employeeID === employeeID);
+        // @ts-ignore
+        return employee.branchName;
     }
 }
