@@ -2,6 +2,8 @@
 
 "PayRollMate app is a user-friendly application designed to automate and streamline the process of generating pay sheets or payroll reports for businesses or organizations. It eliminates the need for manual calculations, reduces human errors, and saves valuable time"
 
+https://github.com/NimanthikaAbeyrathna/PayRollMate/assets/121820614/441d24db-54ca-4e37-b77a-33f94265b539
+
 ## Key Features
 
 - User-Friendly Interface: The app provides an intuitive and easy-to-navigate interface, making it accessible for users of all technical backgrounds.
